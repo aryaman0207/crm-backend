@@ -72,7 +72,7 @@ node server.js
 
 Server runs on:
 
-http://localhost:5000
+https://crm-frontend-gamma-rose.vercel.app/
 
 ### Deployment
 
