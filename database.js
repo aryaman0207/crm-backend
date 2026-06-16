@@ -1,37 +1,50 @@
 const sqlite3 = require("sqlite3").verbose();
 
-const db = new sqlite3.Database("./tickets.db");
+const db = new sqlite3.Database(
+  "./tickets.db",
+  (err) => {
+    if (err) {
+      console.error(
+        "Database connection error:",
+        err.message
+      );
+    } else {
+      console.log(
+        "Connected to SQLite Database"
+      );
+    }
+  }
+);
 
-db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS tickets (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      ticket_id TEXT UNIQUE,
-      customer_name TEXT,
-      customer_email TEXT,
-      subject TEXT,
-      description TEXT,
-      status TEXT DEFAULT 'Open',
-      created_at DATETIME,
-      updated_at DATETIME
-    )
-  `);
- db.run(`
+/* ==========================
+   TICKETS TABLE
+========================== */
+
+db.run(`
+CREATE TABLE IF NOT EXISTS tickets (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ticket_id TEXT UNIQUE,
+  customer_name TEXT NOT NULL,
+  customer_email TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  description TEXT NOT NULL,
+  status TEXT DEFAULT 'Open',
+  created_at TEXT,
+  updated_at TEXT
+)
+`);
+
+/* ==========================
+   NOTES TABLE
+========================== */
+
+db.run(`
 CREATE TABLE IF NOT EXISTS notes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  ticket_id TEXT,
-  note_text TEXT,
+  ticket_id TEXT NOT NULL,
+  note_text TEXT NOT NULL,
   created_at TEXT
 )
 `);
-  db.run(`
-    CREATE TABLE IF NOT EXISTS notes (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      ticket_id TEXT,
-      note_text TEXT,
-      created_at DATETIME
-    )
-  `);
-});
 
 module.exports = db;
